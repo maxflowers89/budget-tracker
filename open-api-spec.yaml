@@ -1,0 +1,293 @@
+openapi: 3.1.0
+info:
+  title: Budget Tracker
+  description: |-
+    This a simple Budget Tracker Server based on the OpenAPI 3.1 specification.<br/>
+    It defines the following APIs:
+    - insert the budget of a project
+    - insert the expenses of a project with the possibility of linking it to a category
+    - retrieve a set of expenses by specifying a range of dates
+    - insert a category for an already existing expense
+
+  contact:
+    email: massimiliano.fiori2@gmail.com
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api/v1
+tags:
+  - name: projects
+    description: Operations relative to a project
+  - name: budgets
+    description: Operations relative to the budget of a project
+  - name: expenses
+    description: Operations relative to the expenses of a project
+  - name: categories
+    description: Operations relative to the expenses'categories
+paths:
+  /projects:
+    get:
+      tags:
+        - projects
+      summary: Retrieve a list of projects
+      description: Retrieve a list of projects
+      operationId: getProjects
+      responses:
+        '200':
+          description: Retrieved list of projects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Project'
+  /budget:
+    post:
+      parameters:
+        - name: projectId
+          in: query
+          description: Id of the project it is wanted to create the budget for
+          required: true
+          schema:
+            type: integer
+            format: int64
+      tags:
+        - budgets
+      summary: Insert a budget for a project
+      description: Insert a budget for a project
+      operationId: insertBudget
+      requestBody:
+        description: Insert a budget for a project
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Budget'
+        required: true
+      responses:
+        '201':
+          description: Item created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Budget'
+        '404':
+          description: projectId not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetails'
+        '400':
+          description: Validation exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetails'
+  /expenses:
+    get:
+      tags:
+        - expenses
+      summary: Retrieve a list of expenses in a given range of dates
+      description: Retrieve a list of expenses in a given range of dates
+      operationId: getExpenses
+      parameters:
+        - name: budgetId
+          in: query
+          description: The id of the budget that the expenses must be part of
+          required: true
+          schema:
+            type: string
+        - name: from
+          in: query
+          description: The starting date from which we want to search the expenses
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: to
+          in: query
+          description: The ending date to which we want to search the expenses
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Retrieved list of expenses in the specified range. Empty if nothing is found.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Expense'
+        '400':
+          description: Validation exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetails'
+    post:
+      tags:
+        - expenses
+      summary: Insert a list of expenses
+      description: Insert a list of expenses
+      operationId: insertExpenses
+      parameters:
+        - name: budgetId
+          in: query
+          description: Id of the budget it is wanted to create the expenses for
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Expense'
+      responses:
+        '201':
+          description: Item created
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Expense'
+        '400':
+          description: Validation exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetails'
+  /expenses/{expensesId}:
+    put:
+      tags:
+        - expenses
+      summary: Update a specific expense
+      description: Update a specific expense
+      operationId: updateExpense
+      parameters:
+        - name: budgetId
+          in: query
+          description: The id of the budget that the expenses must be part of
+          required: true
+          schema:
+            type: string
+        - name: expensesId
+          in: path
+          description: Id of the expense whose category needs to be modified
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Expense'
+      responses:
+        '200':
+          description: Item created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expense'
+        '404':
+          description: expenseId not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetails'
+        '400':
+          description: Validation exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetails'
+  /categories:
+    get:
+      tags:
+        - categories
+      summary: Returns all the categories
+      description: Returns all the categories stored into the database
+      operationId: getCategories
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+components:
+  schemas:
+    Project:
+      required:
+        - id
+        - name
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          examples: [2]
+        name:
+          type: string
+          examples: [STAR]
+    Budget:
+      required:
+        - amount
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          examples: [2]
+        amount:
+          type: number
+          format: double
+          examples: [1000.00]
+    Expense:
+      required:
+        - amount
+        - date
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          examples: [1]
+        amount:
+          type: number
+          format: double
+          examples: [1000.00]
+        date:
+          type: string
+          format: date
+          examples: [2025-01-01]
+        category:
+          $ref: '#/components/schemas/Category'
+    Category:
+      type: string
+      enum:
+        - consultancy services
+        - licenses
+        - operations
+        - business travels
+    ErrorDetails:
+      required:
+        - statusCode
+        - message
+        - requestDescription
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          format: int64
+          examples: [400,404]
+        message:
+          type: string
+        requestDescription:
+          type: string

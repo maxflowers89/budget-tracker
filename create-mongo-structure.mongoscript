@@ -1,3 +1,0 @@
-use mydatabase
-db.createCollection("projects");
-db.projects.insertOne({"_id": 1, "name": "interview-test"});

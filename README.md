@@ -32,3 +32,11 @@ Start the application from your IDE (if you use IntelliJ, right-click the [Budge
 
 The service will be exposed at http://localhost:8080
 
+To create a project in Mongo DB, connect to it by using the credentials and port in the [compose.yaml](./compose.yaml) and then running the following commands
+
+```javascript
+use mydatabase
+db.createCollection("projects");
+db.projects.insertOne({"_id": 1, "name": "interview-test"});
+```
+

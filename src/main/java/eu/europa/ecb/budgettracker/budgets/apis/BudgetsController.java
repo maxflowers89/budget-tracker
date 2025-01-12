@@ -5,22 +5,23 @@ import eu.europa.ecb.budgettracker.budgets.services.BudgetsService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/budget")
 public class BudgetsController {
 
-  private final BudgetsService budgetsService;
+    private final BudgetsService budgetsService;
 
-  @PostMapping
-  public ResponseEntity<Budget> save(@Valid @RequestBody Budget budget,
-      @RequestParam int projectId) {
-    return ResponseEntity.ok(budgetsService.save(budget, projectId));
-  }
+    @GetMapping
+    public ResponseEntity<Budget> getBudget(@RequestParam int projectId) {
+        return ResponseEntity.ok(budgetsService.findByProjectId(projectId));
+    }
+
+    @PostMapping
+    public ResponseEntity<Budget> save(@Valid @RequestBody Budget budget,
+                                       @RequestParam int projectId) {
+        return ResponseEntity.ok(budgetsService.save(budget, projectId));
+    }
 }

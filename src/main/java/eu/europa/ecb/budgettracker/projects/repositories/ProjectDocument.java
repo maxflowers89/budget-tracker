@@ -6,11 +6,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "projects")
 public class ProjectDocument {
-  @Id
-  private int id;
-  private String name;
+    @Id
+    private int id;
+    private String name;
 
-  public static Project toDto(ProjectDocument projectDocument) {
-    return new Project(projectDocument.id, projectDocument.name);
-  }
+    public static Project toDto(ProjectDocument projectDocument) {
+        return new Project(projectDocument.id, projectDocument.name);
+    }
 }

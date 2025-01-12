@@ -12,36 +12,36 @@ import org.springframework.web.context.request.WebRequest;
 @RestControllerAdvice
 public class ControllersExceptionsHandler {
 
-  @ExceptionHandler(DocumentNotFoundException.class)
-  @ResponseStatus(value = HttpStatus.NOT_FOUND)
-  public ErrorDetails documentNotFoundException(
-      DocumentNotFoundException exception,
-      WebRequest request) {
-    return new ErrorDetails(
-        HttpStatus.NOT_FOUND.value(),
-        exception.getMessage(),
-        request.getDescription(false));
-  }
+    @ExceptionHandler(DocumentNotFoundException.class)
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    public ErrorDetails documentNotFoundException(
+            DocumentNotFoundException exception,
+            WebRequest request) {
+        return new ErrorDetails(
+                HttpStatus.NOT_FOUND.value(),
+                exception.getMessage(),
+                request.getDescription(false));
+    }
 
-  @ExceptionHandler(MethodArgumentNotValidException.class)
-  @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-  public ErrorDetails methodArgumentNotValidException(
-      MethodArgumentNotValidException exception,
-      WebRequest request) {
-    return new ErrorDetails(
-        HttpStatus.BAD_REQUEST.value(),
-        exception.getMessage(),
-        request.getDescription(false));
-  }
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorDetails methodArgumentNotValidException(
+            MethodArgumentNotValidException exception,
+            WebRequest request) {
+        return new ErrorDetails(
+                HttpStatus.BAD_REQUEST.value(),
+                exception.getMessage(),
+                request.getDescription(false));
+    }
 
-  @ExceptionHandler(Exception.class)
-  @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-  public ErrorDetails globalException(
-      Exception exception,
-      WebRequest request) {
-    return new ErrorDetails(
-        HttpStatus.INTERNAL_SERVER_ERROR.value(),
-        exception.getMessage(),
-        request.getDescription(false));
-  }
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorDetails globalException(
+            Exception exception,
+            WebRequest request) {
+        return new ErrorDetails(
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                exception.getMessage(),
+                request.getDescription(false));
+    }
 }

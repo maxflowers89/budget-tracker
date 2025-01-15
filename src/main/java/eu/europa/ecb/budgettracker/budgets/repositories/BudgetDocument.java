@@ -17,7 +17,7 @@ public class BudgetDocument {
     private BigDecimal amount;
 
     public static BudgetDocument fromDto(Budget budget, int projectId) {
-        return BudgetDocument.builder().projectId(projectId).amount(budget.amount()).build();
+        return BudgetDocument.builder().id(budget.id()).projectId(projectId).amount(budget.amount()).build();
     }
 
     public static Budget toDto(BudgetDocument budgetDocument) {
